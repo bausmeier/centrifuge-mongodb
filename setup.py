@@ -21,7 +21,7 @@ def long_description():
 
 setup(
     name='centrifuge-mongodb',
-    version='0.1.0',
+    version='0.1.1',
     description="MongoDB structure backend for Centrifuge",
     long_description=long_description(),
     url='https://github.com/centrifugal/centrifuge-mongodb',
