@@ -1,0 +1,4 @@
+*.pyc
+build/*
+dist/*
+centrifuge_mongodb.egg-info/*
