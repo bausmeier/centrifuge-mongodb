@@ -7,18 +7,14 @@ Install:
 pip install centrifuge-mongodb
 ```
 
-Enable in Centrifuge configuration file:
+Enable it when launching  Centrifuge:
 
 ```javascript
-{
-    "structure": {
-        "class": "centrifuge_mongodb.Storage",
-        "settings": {
-            "host": "localhost",
-            "port": 27017,
-            "name": "centrifuge",
-            "pool_size": 10
-        }
-    }
-}
+CENTRIFUGE_STORAGE=centrifuge_mongodb.Storage centrifuge
+```
+
+inspect available options:
+
+```javascript
+CENTRIFUGE_STORAGE=centrifuge_mongodb.Storage centrifuge --help
 ```
