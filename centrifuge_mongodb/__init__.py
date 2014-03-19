@@ -2,8 +2,22 @@
 import uuid
 import motor
 from tornado.gen import Task, coroutine, Return
+from tornado.options import define
 
 from centrifuge.structure import BaseStorage
+
+
+define(
+    "mongodb_host", default='localhost', help="MongoDB host", type=str
+)
+
+define(
+    "mongodb_port", default=27017, help="MongoDB port", type=int
+)
+
+define(
+    "mongodb_name", default='centrifuge', help="MongoDB database name", type=str
+)
 
 
 def on_error(error):
@@ -87,9 +101,9 @@ class Storage(BaseStorage):
 
     def open_connection(self):
         self._conn = motor.MotorClient(
-            host=self.settings.get("host", "localhost"),
-            port=self.settings.get("port", 27017)
-        ).open_sync()[self.settings.get("name", "centrifuge")]
+            host=self.options.mongodb_host,
+            port=self.options.mongodb_port
+        ).open_sync()[self.options.mongodb_name]
 
     def ensure_indexes(self, drop=False):
         if drop:
