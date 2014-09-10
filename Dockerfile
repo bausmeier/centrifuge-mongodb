@@ -7,4 +7,5 @@ RUN cd /src && \
     rm -r /src
 
 USER centrifuge
+ENV PYTHON_EGG_CACHE /data
 ENV CENTRIFUGE_STORAGE centrifuge_mongodb.Storage
