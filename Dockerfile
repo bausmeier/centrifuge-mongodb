@@ -1,4 +1,4 @@
-FROM bausmeier/centrifuge:latest
+FROM bausmeier/centrifuge:logging
 
 USER root
 ADD . /src
@@ -7,5 +7,6 @@ RUN cd /src && \
     rm -r /src
 
 USER centrifuge
-ENV PYTHON_EGG_CACHE /data
+RUN mkdir /tmp/.python-eggs
+ENV PYTHON_EGG_CACHE /tmp/.python-eggs
 ENV CENTRIFUGE_STORAGE centrifuge_mongodb.Storage
