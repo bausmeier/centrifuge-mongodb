@@ -109,7 +109,6 @@ class Storage(BaseStorage):
         if drop:
             self._conn.project.drop_indexes()
             self._conn.namespace.drop_indexes()
-        self._conn.project.ensure_index([('name', 1)], unique=True)
         self._conn.namespace.ensure_index([('name', 1), ('project_id', 1)], unique=True)
         self._conn.project.ensure_index("options.name", unique=True)
 
