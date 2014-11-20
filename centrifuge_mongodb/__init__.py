@@ -33,11 +33,12 @@ def insert(collection, data):
     """
     Insert data into collection.
     """
-    (result, error), _ = yield Task(collection.insert, data)
-    if error:
-        on_error(error)
-
-    raise Return((result, None))
+    try:
+        result = yield collection.insert(data)
+    except Exception as err:
+        on_error(err)
+    else:
+        raise Return((result, None))
 
 
 @coroutine
@@ -45,12 +46,14 @@ def find(collection, haystack):
     """
     Find objects in MongoDB collection by haystack.
     """
-    cursor = collection.find(haystack, limit=10000)
-    (objects, error), _ = yield Task(cursor.to_list)
-    if error:
-        on_error(error)
+    cursor = collection.find(haystack)
 
-    raise Return((objects, None))
+    try:
+        objects = yield cursor.to_list(length=10000)
+    except Exception as err:
+        on_error(err)
+    else:
+        raise Return((objects, None))
 
 
 @coroutine
@@ -58,12 +61,12 @@ def update(collection, haystack, update_data):
     """
     Update entries matching haystack with update_data.
     """
-    (result, error), _ = yield Task(
-        collection.update, haystack, {"$set": update_data}
-    )
-    if error:
-        on_error(error)
-    raise Return((result, None))
+    try:
+        result = yield collection.update(haystack, {"$set": update_data})
+    except Exception as err:
+        on_error(err)
+    else:
+        raise Return((result, None))
 
 
 @coroutine
@@ -71,12 +74,14 @@ def find_one(collection, haystack):
     """
     Find object in MongoDB collection.
     """
-    (obj, error), _ = yield Task(collection.find_one, haystack)
-    if error:
-        on_error(error)
-    if not obj:
-        raise Return((None, None))
-    raise Return((obj, None))
+    try:
+        obj = yield Task(collection.find_one, haystack)
+    except Exception as err:
+        on_error(err)
+    else:
+        if not obj:
+            raise Return((None, None))
+        raise Return((obj, None))
 
 
 @coroutine
@@ -84,11 +89,12 @@ def remove(collection, haystack):
     """
     Find object in MongoDB collection.
     """
-    (res, error), _ = yield Task(collection.remove, haystack)
-    if error:
-        on_error(error)
-
-    raise Return((res, None))
+    try:
+        res = yield collection.remove(haystack)
+    except Exception as err:
+        on_error(err)
+    else:
+        raise Return((res, None))
 
 
 class Storage(BaseStorage):
@@ -103,7 +109,7 @@ class Storage(BaseStorage):
         self._conn = motor.MotorClient(
             host=self.options.mongodb_host,
             port=self.options.mongodb_port
-        ).open_sync()[self.options.mongodb_name]
+        )[self.options.mongodb_name]
 
     def ensure_indexes(self, drop=False):
         if drop:
@@ -120,8 +126,8 @@ class Storage(BaseStorage):
     @coroutine
     def clear_structure(self):
         try:
-            yield Task(self._conn.drop_collection, "project")
-            yield Task(self._conn.drop_collection, "namespace")
+            yield self._conn.drop_collection("project")
+            yield self._conn.drop_collection("namespace")
         except Exception as err:
             raise Return((None, err))
         raise Return((True, None))
