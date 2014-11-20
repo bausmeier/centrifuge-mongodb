@@ -19,6 +19,10 @@ define(
     "mongodb_name", default='centrifuge', help="MongoDB database name", type=str
 )
 
+define(
+    "mongodb_url", default='', help="MongoDB connection URL", type=str
+)
+
 
 def on_error(error):
     raise Return((None, error))
@@ -106,10 +110,13 @@ class Storage(BaseStorage):
         self._conn = None
 
     def open_connection(self):
-        self._conn = motor.MotorClient(
-            host=self.options.mongodb_host,
-            port=self.options.mongodb_port
-        )[self.options.mongodb_name]
+        if self.options.mongodb_url:
+            self._conn = motor.MotorClient(self.options.mongodb_url).get_default_database()
+        else:
+            self._conn = motor.MotorClient(
+                host=self.options.mongodb_host,
+                port=self.options.mongodb_port
+            )[self.options.mongodb_name]
 
     def ensure_indexes(self, drop=False):
         if drop:
