@@ -10,8 +10,8 @@ if sys.argv[-1] == 'test':
 
 requirements = [
     'centrifuge',
-    'six==1.3.0',
-    'motor==0.1.2'
+    'six>=1.3.0',
+    'motor==0.3.4'
 ]
 
 
@@ -21,7 +21,7 @@ def long_description():
 
 setup(
     name='centrifuge-mongodb',
-    version='0.2.0',
+    version='0.3.0',
     description="MongoDB structure backend for Centrifuge",
     long_description=long_description(),
     url='https://github.com/centrifugal/centrifuge-mongodb',
@@ -37,6 +37,7 @@ setup(
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
